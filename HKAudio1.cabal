@@ -19,4 +19,5 @@ executable HKAudio1
   build-depends:       base >= 4.7 && < 5
                      , binary
                      , bytestring
-  ghc-options:       -Wall -fno-warn-unused-imports -O2
+                     , random
+  ghc-options:       -Wall -fno-warn-unused-imports -O -rtsopts -threaded -eventlog
