@@ -149,7 +149,7 @@ wrrrt :: Instrument
 wrrrt _ = volume 0.4 (mix (square 9.01) (square 9))
 
 brrst :: Instrument
-brrst _ = volume 0.7 ((square 4) . (mix (const 2) (sine 3)))
+brrst _ = volume 0.3 ((square 4) . (mix (const 2) (sine 3)))
 
 guuop :: Instrument
 guuop n = sine (fromIntegral n) . mix (const 10) (sine 5)
@@ -274,8 +274,7 @@ eucl xs ys
 
 
 theMusic :: [(Time, Signal)]
-theMusic = -- rendr theSong : techno
-    techno
+theMusic = rendr theSong : techno
 
 techno :: [(Time, Signal)]
 techno =
@@ -286,10 +285,10 @@ techno =
         8 `times` crackNoiseLite :>: 6 `times` crackNoise :>: 6 `times`
         (crackNoiseLite :|: crackNoiseHeavy) :>:
         2 `times` (percAED crackNoiseHeavy)
-    crackNoiseLite = Rest (1 / 8) :>: a 4 3 clp
-    crackNoise = crackNoiseLite :|: Rest (1 / 8) :>: a 4 1 wrrrt
-    crackNoiseHeavy =
-        crackNoise :|: Rest (1 / 8) :>: a 4 2 brrst :>: Rest (1 / 8)
+    crackNoiseLite = Vol 0.3 (Rest (1 / 8) :>: a 4 3 clp)
+    crackNoise = Vol 0.5 (crackNoiseLite :|: Vol 0.5 (Rest (1 / 8) :>: a 4 1 wrrrt))
+    crackNoiseHeavy = Vol 0.5 (
+        crackNoise :|: Rest (1 / 8) :>: Vol 0.5 (a 4 2 brrst) :>: Rest (1 / 8))
     percAED :: Music -> Music
     percAED fm =
         4 `times` (fm :|: am) :>: 4 `times` (fm :|: em) :>: 2 `times`
@@ -320,7 +319,7 @@ techno =
         percAED bassDrum :>:
         (16 `times` distributeOver 3 8 (a 4 1 brrst) (Rest (1 / 8)) :|:
          percAED bassDrum :>:
-         (percAED cliqs :|: Rest (4 * 4 / 8) :>: 12 `times`
+         (percAED (Vol 0.5 cliqs) :|: Rest (4 * 4 / 8) :>: 12 `times`
           (bassDrum :|: crackNoise)))
     beats1 =
         percAED2 (bassDrum :|: crackNoiseLite) :>:
@@ -342,42 +341,44 @@ theSong = 2 `times` alleMeineEntchen
   where
     alleMeineEntchenBass =
         Vol 0.3 $
-        majorChord (c 4 8 bass) :>: majorChord (g 4 4 bass) :>:
-        majorChord (c 4 4 bass) :>:
-        majorChord (g 4 4 bass) :>:
-        majorChord (c 4 4 bass) :>:
-        majorChord (f 4 4 bass) :>:
-        minorChord (e 4 4 bass) :>:
-        majorChord (g 4 4 bass) :>:
-        majorChord (c 4 4 bass) :>:
-        Rest 0.5
+                   majorChord (c 4 8 bass) :>:
+                   majorChord (g 4 4 bass) :>:
+                   majorChord (c 4 4 bass) :>:
+                   majorChord (g 4 4 bass) :>:
+                   majorChord (c 4 4 bass) :>:
+                   majorChord (f 4 4 bass) :>:
+                   minorChord (e 4 4 bass) :>:
+                   majorChord (g 4 4 bass) :>:
+                   majorChord (c 4 4 bass) :>:
+                   Rest 0.5
     alleMeineEntchen =
-        alleMeineEntchenBass :|: (c 6 1 voice) :>: (d 6 1 voice) :>:
-        (e 6 1 voice) :>:
-        (f 6 1 voice) :>:
-        (g 6 4 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (g 6 4 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (a 6 1 voice) :>:
-        (g 6 4 voice) :>:
-        (f 6 1 voice) :>:
-        (f 6 1 voice) :>:
-        (f 6 1 voice) :>:
-        (f 6 1 voice) :>:
-        (e 6 2 voice) :>:
-        (e 6 2 voice) :>:
-        (g 6 1 voice) :>:
-        (g 6 1 voice) :>:
-        (g 6 1 voice) :>:
-        (g 6 1 voice) :>:
-        (c 6 4 voice) :>:
-        Rest 0.5
+        alleMeineEntchenBass :|: (c 6 1 voice) :>:
+                                 (d 6 1 voice) :>:
+                                 (e 6 1 voice) :>:
+                                 (f 6 1 voice) :>:
+                                 (g 6 4 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (g 6 4 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (a 6 1 voice) :>:
+                                 (g 6 4 voice) :>:
+                                 (f 6 1 voice) :>:
+                                 (f 6 1 voice) :>:
+                                 (f 6 1 voice) :>:
+                                 (f 6 1 voice) :>:
+                                 (e 6 2 voice) :>:
+                                 (e 6 2 voice) :>:
+                                 (g 6 1 voice) :>:
+                                 (g 6 1 voice) :>:
+                                 (g 6 1 voice) :>:
+                                 (g 6 1 voice) :>:
+                                 (c 6 4 voice) :>:
+                                 Rest 0.5
     voice =
         signalToInstrument
             (\f ->
@@ -416,6 +417,7 @@ render (startT,endT) sampleRate s =
     clipped = (clip (-1.0) 1.0 s) -- the same signal clipped to stay within [-1; 1]
     totalSamples = (endT - startT) / samplePeriod -- total number of samples to render
     samplePeriod = 1.0 / (fromIntegral sampleRate) -- time interval between two sample points
+
 main :: IO ()
 main = do
     let buffers = renderBuffers theMusic
