@@ -3,6 +3,14 @@ module Synth where
 import Data.Int (Int16)
 import System.Random
 
+
+
+
+
+
+
+
+
 type Value = Double
 
 type Amplitude = Value
@@ -15,9 +23,33 @@ type Signal = Time -> Value
 
 type FiniteSignal = (Time, Signal)
 
+
+
+
+
+
+
+
+
+
 -- |A sound from outer space.
 silence :: Signal
 silence = const 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- |Oscillate in a form of a sine wave at 'freq' Hz.
 sine :: Frequency -> Signal
