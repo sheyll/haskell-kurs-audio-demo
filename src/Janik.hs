@@ -1,4 +1,4 @@
-module Jannick where
+module Janik where
 
 
 import Synth
