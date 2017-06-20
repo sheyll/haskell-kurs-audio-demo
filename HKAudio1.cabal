@@ -15,9 +15,14 @@ cabal-version:       >=1.10
 executable HKAudio1
   hs-source-dirs:      src
   main-is:             Main.hs
+  other-modules:       Playback
+                     , Synth
+                     , Music
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5
                      , binary
                      , bytestring
                      , random
+                     , process
   ghc-options:       -Wall -fno-warn-unused-imports -O -rtsopts -threaded -eventlog
+  extensions:        FlexibleContexts
