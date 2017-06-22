@@ -57,29 +57,29 @@ c, cis, d, dis, e, f, fis, g, gis, a, ais, b :: Octave
                                              -> Time
                                              -> Instrument
                                              -> Music
-c o t = Play (t / 8) $ noteToMidiNote 0 o
+c o t = Play t $ noteToMidiNote 0 o
 
-cis o t = Play (t / 8) $ noteToMidiNote 1 o
+cis o t = Play t $ noteToMidiNote 1 o
 
-d o t = Play (t / 8) $ noteToMidiNote 2 o
+d o t = Play t $ noteToMidiNote 2 o
 
-dis o t = Play (t / 8) $ noteToMidiNote 3 o
+dis o t = Play t $ noteToMidiNote 3 o
 
-e o t = Play (t / 8) $ noteToMidiNote 4 o
+e o t = Play t $ noteToMidiNote 4 o
 
-f o t = Play (t / 8) $ noteToMidiNote 5 o
+f o t = Play t $ noteToMidiNote 5 o
 
-fis o t = Play (t / 8) $ noteToMidiNote 6 o
+fis o t = Play t $ noteToMidiNote 6 o
 
-g o t = Play (t / 8) $ noteToMidiNote 7 o
+g o t = Play t $ noteToMidiNote 7 o
 
-gis o t = Play (t / 8) $ noteToMidiNote 8 o
+gis o t = Play t $ noteToMidiNote 8 o
 
-a o t = Play (t / 8) $ noteToMidiNote 9 o
+a o t = Play t $ noteToMidiNote 9 o
 
-ais o t = Play (t / 8) $ noteToMidiNote 10 o
+ais o t = Play t $ noteToMidiNote 10 o
 
-b o t = Play (t / 8) $ noteToMidiNote 11 o
+b o t = Play t $ noteToMidiNote 11 o
 
 bd :: Instrument
 bd n t = clip (-1) 1 (sine (midiNoteToFreq n * fade 10 t')) t'
@@ -90,7 +90,7 @@ clp :: Instrument
 clp _ = square 8
 
 hht :: Instrument
-hht _ = clip (-0.3) 0.3 (amp (fade 4) noise)
+hht _ = clip (-0.3) 0.3 (amp (fade 10) noise)
 
 hht2 :: Instrument
 hht2 _ = clip (-0.3) 0.3 (amp (fade 100) noise)
@@ -164,6 +164,9 @@ musicDuration m =
 
 rendr :: Music -> (Time, Signal)
 rendr m = (musicDuration m, renderMusic m)
+
+bpm :: Time -> Music -> Music
+bpm b = tempo (b / 60)
 
 tempo :: Time -> Music -> Music
 tempo t m =

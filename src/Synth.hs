@@ -65,6 +65,8 @@ square freq t =
     (i, _) = properFraction (t * freq)
     i :: Integer
 
+
+
 -- |Multiplies the signal by a fixed value.
 volume :: Amplitude -> Signal -> Signal
 volume x s t = s t * x

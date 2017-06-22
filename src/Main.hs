@@ -15,14 +15,24 @@ import Music
 
 -- * Example Sounds
 
-tatue = play [(2, modulate  (square 2) (sine . (+ 660) . (* 220)))]
+tatue = modulate  (square 2) (sine . (+ 660) . (* 220))
 
-wooooormmhhh = play [(15, modulate  (sine 40) (sine . (+ 400) ))]
+wooooormmhhh = modulate  (sine 40) (sine . (+ 400))
 
-pling = play [(0.5, amp (fade 15) (sine 1200))]
+pling = amp (fade 15) (sine 1200)
 
-detuned = play [(1, modulate  (fade 10) (sine . (+ 400) . (*200)))]
+detuned = modulate  (fade 10) (sine . (+ 400) . (*200))
 
+
+sineSineSineSineSineExample1 = sineSineSineSineSine 140 200 22 0.3 0.05
+
+sineSineSineSineSineExample2 = sineSineSineSineSine 80 100 75 13 100
+
+sineSineSineSineSine fc1 fc2 fm fmm fmmm t =
+  sine (fc1 + sineAmped (sineAmped 1 fmm t) fm (sineAmped fc2 fmmm t)) t
+  where
+    sineAmped amplitude frequency =
+      volume amplitude (sine frequency)
 
 -- * Example Artwork
 
@@ -138,53 +148,52 @@ theRenderedSong :: [(Time, Signal)]
 theRenderedSong = [rendr theSong]
 
 theSong :: Music
-theSong = 2 `times` alleMeineEntchen
+theSong = bpm 90 (times 5 beats)
+          -- tempo 0.5
+          --   (melody :>:
+          --    (melody :|: beats))
   where
-    alleMeineEntchenBass =
-      Vol 0.3 $
-      majorChord (c 4 8 bass) :>:
-      majorChord (g 4 4 bass) :>:
-      majorChord (c 4 4 bass) :>:
-      majorChord (g 4 4 bass) :>:
-      majorChord (c 4 4 bass) :>:
-      majorChord (f 4 4 bass) :>:
-      minorChord (e 4 4 bass) :>:
-      majorChord (g 4 4 bass) :>: majorChord (c 4 4 bass) :>: Rest 0.5
-    alleMeineEntchen =
-      alleMeineEntchenBass :|:
-      c 6 1 voice :>:
-      d 6 1 voice :>:
-      e 6 1 voice :>:
-      f 6 1 voice :>:
-      g 6 4 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      g 6 4 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      a 6 1 voice :>:
-      g 6 4 voice :>:
-      f 6 1 voice :>:
-      f 6 1 voice :>:
-      f 6 1 voice :>:
-      f 6 1 voice :>:
-      e 6 2 voice :>:
-      e 6 2 voice :>:
-      g 6 1 voice :>:
-      g 6 1 voice :>:
-      g 6 1 voice :>: g 6 1 voice :>: c 6 4 voice :>: Rest 0.5
+    tiefeStimme = progression id id 3
+    beats = einTaktKickDrum :|: einTaktHighHats
+      where
+        einTaktKickDrum = times 4 (schlag bd)
+        einTaktHighHats = times 2 (Rest 1 :>: schlag hht2)
+        schlag i = Play (1/8) 50 i :>: Rest (7/8)
+
+
+    progression playerMinor playerMajor o i =
+      playerMinor (a o 1 i) :>:
+      playerMajor (f o 1 i) :>:
+      playerMajor (c o 1 i) :>:
+      playerMajor (g o 1 i)
+
+
     voice =
       signalToInstrument
         (\freq ->
            mix
              (volume 0.4 (amp (fade 0.25) (warmSynth 3.0e-3 freq)))
              (delay 0.2 (volume 0.2 (amp (fade 0.5) (warmSynth 3.0e-5 freq)))))
+    testTon = signalToInstrument sine
     bass =
       signalToInstrument
         (\freq -> volume 0.4 (amp (fade 0.15) (mix (sine (freq + 0.2)) (sine freq))))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 main :: IO ()
-main = play technoNoNoise -- techo -- theRenderedSong
+main = play theRenderedSong
