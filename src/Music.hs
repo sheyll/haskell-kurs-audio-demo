@@ -53,6 +53,32 @@ signalToInstrument = (. midiNoteToFreq)
 
 type Octave = Int
 
+
+tonC = 0
+tonCis = 1
+tonD = 2
+tonDis = 3
+tonE = 4
+tonF = 5
+tonFis = 6
+tonG = 7
+tonGis = 8
+tonA = 9
+tonAis = 10
+tonH = 11
+tonC :: Int
+tonCis :: Int
+tonD :: Int
+tonDis :: Int
+tonE :: Int
+tonF :: Int
+tonFis :: Int
+tonG :: Int
+tonGis :: Int
+tonA :: Int
+tonAis :: Int
+tonH :: Int
+
 c, cis, d, dis, e, f, fis, g, gis, a, ais, b :: Octave
                                              -> Time
                                              -> Instrument

@@ -3,14 +3,6 @@ module Synth where
 import Data.Int (Int16)
 import System.Random
 
-
-
-
-
-
-
-
-
 type Value = Double
 
 type Amplitude = Value
@@ -23,33 +15,9 @@ type Signal = Time -> Value
 
 type FiniteSignal = (Time, Signal)
 
-
-
-
-
-
-
-
-
-
 -- |A sound from outer space.
 silence :: Signal
 silence = const 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 -- |Oscillate in a form of a sine wave at 'freq' Hz.
 sine :: Frequency -> Signal
@@ -64,8 +32,6 @@ square freq t =
   where
     (i, _) = properFraction (t * freq)
     i :: Integer
-
-
 
 -- |Multiplies the signal by a fixed value.
 volume :: Amplitude -> Signal -> Signal
@@ -83,9 +49,32 @@ amp x y t = x t * y t
 pitch :: Amplitude -> Signal -> Signal
 pitch factor signal = signal . (* factor)
 
--- | Use one signal to modify another signal
-modulate :: (Time -> Value) -> (Value -> Signal) -> Signal
+-- | Apply a function that returns a signal to the value a control signal
+modulate :: Signal -> (Value -> Signal) -> Signal
 modulate s f t = f (s t) t
+
+-- | An ADSR envolope
+adsr :: Time -> Time -> Time -> Time -> Amplitude -> Signal
+adsr attackTime decayTime sustainTime releaseTime sustainLevel t
+  | t >= tAttack && t < tDecay = t / attackTime
+  | t >= tDecay && t < tSustain =
+    let x = (t - tDecay) / decayTime
+    in 1 + x * (sustainLevel - 1)
+  | t >= tSustain && t < tRelease = sustainLevel
+  | t >= tRelease && t < tOff =
+    let x = (t - tRelease) / releaseTime
+    in sustainLevel * (1 - x)
+  | otherwise = 0
+  where
+    tAttack = 0
+    tDecay = tAttack + attackTime
+    tSustain = tDecay + decayTime
+    tRelease = tSustain + sustainTime
+    tOff = tRelease + releaseTime
+
+-- | Offset all values of a signal
+dcOffset :: Amplitude -> Signal -> Signal
+dcOffset o f t = f t + o
 
 -- | Mix two signals together by adding amplitudes.
 mix :: Signal -> Signal -> Signal
@@ -103,6 +92,11 @@ fade speed = exp . (* speed) . (* (-1.0))
 unfade :: Time -> Signal
 unfade speed = (1 -) . fade speed
 
+-- | FM Synth
+fmSynth :: Frequency -> Frequency -> Value -> Signal
+fmSynth fCarrier fModulator modulationDepth t =
+  sin (2 * pi * fCarrier * t + modulationDepth * sin (2 * pi * fModulator * t))
+
 -- |Delays a signal by a given time.
 delay :: Time -> Signal -> Signal
 delay delayTime s t =
@@ -113,7 +107,6 @@ delay delayTime s t =
 noise :: Signal
 noise t = randomRs (-1, 1) (mkStdGen 0) !! round (t * 44100)
 
-
 samples :: Time -> Time -> Int -> Signal -> [Amplitude]
 samples startTime endTime sampleCount signal = map signal sampleTimes
   where
@@ -122,3 +115,46 @@ samples startTime endTime sampleCount signal = map signal sampleTimes
       where
         sampleIndexToSampleTime index =
           startTime + deltaTime * fromIntegral index
+
+--isBigger links rechts =
+data TagesZeit
+  = Morgens
+  | Mittags
+  | Abends
+
+
+data Antwort = Ja | Nein Mahlzeit
+
+instance Show Antwort where
+  show antwort =
+    case antwort of
+      Ja               -> "Ja, du bimst eins nicer eater am been. ich hoffe den essen ist lekka vong der tastigkeit her AMK"
+      Nein Fruhstuck   -> "du bimst wrong am been!!!!!ELF!!1 du mustt Frthstäkk essen du behindata"
+      Nein Mittagessen -> "du bimst wrong am been!!!!!ELF!!1 du mustt Miitag essen du behindata"
+      Nein Abendessen  -> "du bimst wrong am been!!!!!ELF!!1 du mustt evenink essen du behindata I BIMS 1 gammmelwain"
+
+data Mahlzeit
+  = Fruhstuck
+  | Mittagessen
+  | Abendessen
+  deriving (Eq, Show)
+
+darfIchEsJetztEssen t e =
+   let erlaubt = case t of
+                  Morgens -> Fruhstuck
+                  Mittags -> Mittagessen
+                  Abends  -> Abendessen
+   in if erlaubt == e then Ja
+                      else Nein erlaubt
+
+adsrFmSynth duration freq =
+  modulate
+    (adsr
+       (duration * 0.1)
+       (duration * 0.1)
+       (duration * 0.3)
+       (duration * 0.5)
+       0.5)
+    synth
+  where
+    synth x = volume x (fmSynth freq (freq * 3 / 2 + x) (10 * x))
