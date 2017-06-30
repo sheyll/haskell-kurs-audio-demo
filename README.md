@@ -12,3 +12,9 @@ Run the code by:
 
     stack build
     stack exec HKAudio1 | ./to-soundcard.sh
+
+Examples (composed by Janik)
+============================
+
+[out.mp3]
+
