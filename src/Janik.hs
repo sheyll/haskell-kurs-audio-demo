@@ -4,8 +4,6 @@ import Music
 import Playback
 import Synth
 
-import Synth
-import Playback
 
 
 theRenderedSong :: [(Time, Signal)]
@@ -14,10 +12,11 @@ theRenderedSong = [rendr theSong]
 theSong :: Music
 theSong =
  bpm 120
-   (Vol 0.2 staccatoStimme                                     :>:
-    --(Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme)            :>:
-    --(Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats1) :>:
-    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats2 :|: Vol 0.2 staccatoStimme)
+    (Vol 0.2 appStimme                                     :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme)            :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats1) :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats2  :|: Vol 0.05 staccatoStimme) :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats1  :|: Vol 0.05 staccatoStimme)
     )
 
   where
@@ -51,10 +50,10 @@ theSong =
 
     progression :: (Int -> Int -> Music) -> (Int -> Int -> Music) -> Music
     progression playerMinor playerMajor  =
-      playerMinor 4 tonF :>:
+      playerMinor 4 tonA :>:
+      playerMajor 4 tonF :>:
       playerMajor 4 tonC :>:
-      playerMajor 4 tonG :>:
-      playerMajor 4 tonA
+      playerMajor 4 tonG
 
 staccato i d ton = times d (times 2 (Play (1 / 2) (inOktave 7 ton)  i))
 

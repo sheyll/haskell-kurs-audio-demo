@@ -34,8 +34,8 @@ square freq t =
     i :: Integer
 
 -- |Multiplies the signal by a fixed value.
-volume :: Amplitude -> Signal -> Signal
-volume x s t = s t * x
+volume :: Amplitude -> Signal -> Time -> Value
+volume x s t = s   t * x
 
 -- |Limits the signal's amplitude to not leave specified range.
 clip :: Amplitude -> Amplitude -> Signal -> Signal
@@ -52,6 +52,10 @@ pitch factor signal = signal . (* factor)
 -- | Apply a function that returns a signal to the value a control signal
 modulate :: Signal -> (Value -> Signal) -> Signal
 modulate s f t = f (s t) t
+
+addiere10 t = t + 10
+
+multiplire x b = x * b
 
 -- | An ADSR envolope
 adsr :: Time -> Time -> Time -> Time -> Amplitude -> Signal
@@ -150,11 +154,11 @@ darfIchEsJetztEssen t e =
 adsrFmSynth duration freq =
   modulate
     (adsr
-       (duration * 0.1)
-       (duration * 0.1)
-       (duration * 0.3)
-       (duration * 0.5)
-       0.5)
+       (duration * 0.333)
+       (duration * 0.0)
+       (duration * 0.333)
+       (duration * 0.333)
+       1)
     synth
   where
-    synth x = volume x (fmSynth freq (freq * 3 / 2 + x) (10 * x))
+    synth x = volume x (fmSynth freq (freq * 1 / 2 + x) (5))

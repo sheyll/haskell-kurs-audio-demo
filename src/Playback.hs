@@ -25,7 +25,8 @@ play fs = do
           _ -> 44100
       buffers = renderBuffers sampleRate fs
       cp =
-        (shell "play -x -r 44100 -b 16 -c1  -e signed-integer -t raw -")
+        --(shell "play -x -r 44100 -b 16 -c1  -e signed-integer -t raw -")
+        (shell "sox -x -r 44100 -b 16 -c1  -e signed-integer -t raw - -t mp3 out.mp3")
         {std_in = CreatePipe}
   withCreateProcess
     cp
