@@ -25,7 +25,7 @@ play fs = do
           _ -> 44100
       buffers = renderBuffers sampleRate fs
       cp =
-        (shell "play -x -r 44100 -b 16 -c1  -e signed-integer -t raw -")
+        (shell "/home/sven/.nix-profile/bin/play -x -r 44100 -b 16 -c1  -e signed-integer -t raw -")
         {std_in = CreatePipe}
   withCreateProcess
     cp

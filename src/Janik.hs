@@ -1,9 +1,6 @@
 module Janik where
 
 import Music
-import Playback
-import Synth
-
 import Synth
 import Playback
 
@@ -15,8 +12,8 @@ theSong :: Music
 theSong =
  bpm 120
    (Vol 0.2 staccatoStimme                                     :>:
-    --(Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme)            :>:
-    --(Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats1) :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme)            :>:
+    (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats1) :>:
     (Vol 0.2 appStimme :|: Vol 0.6 tiefeStimme :|: beats2 :|: Vol 0.2 staccatoStimme)
     )
 
