@@ -5,7 +5,6 @@ import Playback
 import Synth
 
 
-
 theRenderedSong :: [(Time, Signal)]
 theRenderedSong = [rendr theSong]
 
